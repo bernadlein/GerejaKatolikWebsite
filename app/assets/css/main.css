@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+@theme {
+  --color-church-50: #fbf8f4;
+  --color-church-100: #f3ece3;
+  --color-church-200: #e7d8c7;
+  --color-church-700: #6f1d2b;
+  --color-church-800: #561522;
+  --color-church-900: #3c1018;
+  --color-gold-500: #b7934a;
+  --color-ink-900: #24201d;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #fbf8f4;
+  color: #24201d;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+h1, h2, h3, .font-display {
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+::selection {
+  background: #6f1d2b;
+  color: white;
+}

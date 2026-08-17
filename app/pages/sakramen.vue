@@ -1,0 +1,2 @@
+<script setup lang="ts">useSeoMeta({ title: 'Pelayanan Sakramen' })</script>
+<template><section class="mx-auto max-w-5xl px-5 py-16 lg:px-8"><p class="text-xs font-bold uppercase tracking-[0.2em] text-gold-500">Pelayanan</p><h1 class="mt-3 font-display text-4xl font-bold text-church-900">Pelayanan Sakramen</h1><p class="mt-4 text-stone-600">Nantinya berisi Baptis, Komuni Pertama, Krisma, Perkawinan, dan pelayanan lainnya.</p></section></template>
