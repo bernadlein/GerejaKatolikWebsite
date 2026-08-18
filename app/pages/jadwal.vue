@@ -3,278 +3,269 @@ import { parishConfig } from '~/config/parish'
 
 useSeoMeta({
   title: 'Jadwal Misa',
+
   description:
-    `Jadwal Misa ${parishConfig.churchName}.`,
+    `Jadwal perayaan Ekaristi di ${parishConfig.churchName}.`,
 })
 
 const {
-  data: schedules,
+  schedules,
   status,
   error,
-} = await useWeeklyMassSchedule()
+} = useWeeklyMassSchedule()
 
-const weekdaySchedule = computed(() =>
-  schedules.value?.find(
-    item => item.id === 'weekday-evening',
-  ),
-)
-
-const saturdayDaily = computed(() =>
-  schedules.value?.find(
-    item => item.id === 'saturday-daily',
-  ),
-)
-
-const saturdaySundayMass = computed(() =>
-  schedules.value?.find(
-    item => item.id === 'saturday-sunday-mass',
-  ),
-)
-
-const sundayMasses = computed(() =>
-  schedules.value
-    ?.filter(
+const weekdaySchedule = computed(
+  () =>
+    schedules.value.find(
       item =>
-        item.days.includes('sunday'),
-    )
-    .sort(
-      (a, b) =>
-        a.time.localeCompare(b.time),
-    )
-    ?? [],
+        item.variant === 'weekday',
+    ),
+)
+
+const saturdaySchedules = computed(
+  () =>
+    schedules.value.filter(
+      item =>
+        item.variant === 'saturday',
+    ),
+)
+
+const sundaySchedule = computed(
+  () =>
+    schedules.value.find(
+      item =>
+        item.variant === 'sunday',
+    ),
 )
 </script>
 
 <template>
-  <main>
+  <main class="bg-[#faf9f7]">
     <!-- HERO -->
     <section
-      class="border-b border-church-200 bg-church-50"
+      class="relative overflow-hidden bg-church-900"
     >
       <div
-        class="mx-auto max-w-6xl px-5 py-14 lg:px-8 lg:py-20"
+        class="absolute -right-32 -top-32 size-[420px] rounded-full border border-white/10"
+      />
+
+      <div
+        class="absolute right-8 top-8 size-[250px] rounded-full border border-white/10"
+      />
+
+      <div
+        class="relative mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24"
       >
-        <div class="flex items-center gap-3">
+        <div
+          class="flex items-center gap-3"
+        >
           <span
-            class="h-px w-8 bg-gold-500"
+            class="h-px w-9 bg-gold-500"
           />
 
           <p
-            class="text-xs font-bold uppercase tracking-[0.22em] text-gold-500"
+            class="text-xs font-bold uppercase tracking-[0.25em] text-gold-500"
           >
-            Liturgi
+            Perayaan Ekaristi
           </p>
         </div>
 
         <h1
-          class="mt-4 font-display text-4xl font-bold text-church-900 sm:text-5xl"
+          class="mt-5 max-w-3xl font-display text-5xl font-bold tracking-tight text-white sm:text-6xl"
         >
           Jadwal Misa
         </h1>
 
         <p
-          class="mt-5 max-w-2xl text-base leading-7 text-stone-600"
+          class="mt-5 max-w-2xl text-base leading-8 text-white/60"
         >
-          Jadwal perayaan Ekaristi mingguan
-          di {{ parishConfig.churchName }}.
+          Mari bersama merayakan Ekaristi
+          dan bertumbuh dalam persekutuan iman
+          di {{ parishConfig.name }}.
         </p>
       </div>
     </section>
 
     <!-- SCHEDULE -->
     <section
-      class="mx-auto max-w-6xl px-5 py-14 lg:px-8 lg:py-20"
+      class="mx-auto max-w-7xl px-5 py-14 lg:px-8 lg:py-20"
     >
       <!-- Loading -->
       <div
         v-if="status === 'pending'"
-        class="space-y-3"
+        class="grid gap-5 md:grid-cols-2"
       >
         <div
           v-for="item in 4"
           :key="item"
-          class="h-24 animate-pulse rounded-3xl bg-stone-100"
+          class="h-[280px] animate-pulse rounded-[2rem] bg-stone-200/60"
         />
       </div>
 
       <!-- Error -->
       <div
         v-else-if="error"
-        class="rounded-3xl border border-red-200 bg-red-50 p-6"
+        class="rounded-[2rem] border border-red-200 bg-red-50 p-8"
       >
         <p class="font-semibold text-red-900">
           Jadwal misa belum dapat dimuat.
         </p>
+
+        <p class="mt-2 text-sm text-red-700">
+          Silakan coba beberapa saat lagi.
+        </p>
       </div>
 
       <template v-else>
+        <!-- Intro -->
         <div
-          class="overflow-hidden rounded-[2rem] border border-stone-200 bg-white"
+          class="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between"
         >
-          <!-- Header -->
-          <div
-            class="hidden grid-cols-[1fr_220px] bg-church-900 px-7 py-5 text-white sm:grid"
-          >
+          <div>
             <p
-              class="text-xs font-bold uppercase tracking-[0.18em]"
+              class="text-xs font-bold uppercase tracking-[0.2em] text-gold-500"
             >
-              Misa
+              Jadwal Mingguan
             </p>
 
-            <p
-              class="text-xs font-bold uppercase tracking-[0.18em]"
+            <h2
+              class="mt-3 font-display text-3xl font-bold text-church-900"
             >
-              Waktu
-            </p>
+              Perayaan Misa
+            </h2>
           </div>
 
-          <!-- Senin - Jumat -->
-          <div
-            v-if="weekdaySchedule"
-            class="grid gap-3 border-b border-stone-200 px-6 py-6 sm:grid-cols-[1fr_220px] sm:items-center sm:px-7"
+          <p
+            class="max-w-lg text-sm leading-6 text-stone-500"
           >
-            <div>
-              <p
-                class="font-display text-xl font-bold text-church-900"
-              >
-                Senin – Jumat
-              </p>
-
-              <p
-                class="mt-1 text-sm text-stone-500"
-              >
-                Misa Harian
-              </p>
-            </div>
-
-            <p
-              class="font-display text-2xl font-bold text-church-900"
-            >
-              {{ weekdaySchedule.time }} WIB
-            </p>
-          </div>
-
-          <!-- Sabtu Harian -->
-          <div
-            v-if="saturdayDaily"
-            class="grid gap-3 border-b border-stone-200 bg-stone-50/70 px-6 py-6 sm:grid-cols-[1fr_220px] sm:items-center sm:px-7"
-          >
-            <div>
-              <p
-                class="font-display text-xl font-bold text-church-900"
-              >
-                Sabtu
-              </p>
-
-              <p
-                class="mt-1 text-sm text-stone-500"
-              >
-                Misa Harian
-              </p>
-            </div>
-
-            <p
-              class="font-display text-2xl font-bold text-church-900"
-            >
-              {{ saturdayDaily.time }} WIB
-            </p>
-          </div>
-
-          <!-- Sabtu Minggu -->
-          <div
-            v-if="saturdaySundayMass"
-            class="grid gap-3 border-b border-stone-200 px-6 py-6 sm:grid-cols-[1fr_220px] sm:items-center sm:px-7"
-          >
-            <div>
-              <p
-                class="font-display text-xl font-bold text-church-900"
-              >
-                Sabtu
-              </p>
-
-              <p
-                class="mt-1 text-sm text-stone-500"
-              >
-                Misa Minggu
-              </p>
-            </div>
-
-            <p
-              class="font-display text-2xl font-bold text-church-900"
-            >
-              {{ saturdaySundayMass.time }} WIB
-            </p>
-          </div>
-
-          <!-- Minggu -->
-          <div
-            class="grid gap-3 bg-stone-50/70 px-6 py-6 sm:grid-cols-[1fr_220px] sm:items-center sm:px-7"
-          >
-            <div>
-              <p
-                class="font-display text-xl font-bold text-church-900"
-              >
-                Minggu
-              </p>
-
-              <p
-                class="mt-1 text-sm text-stone-500"
-              >
-                Misa Minggu
-              </p>
-            </div>
-
-            <div
-              class="flex flex-wrap items-center gap-2"
-            >
-              <template
-                v-for="(mass, index) in sundayMasses"
-                :key="mass.id"
-              >
-                <span
-                  class="font-display text-2xl font-bold text-church-900"
-                >
-                  {{ mass.time }}
-                </span>
-
-                <span
-                  v-if="index < sundayMasses.length - 1"
-                  class="text-stone-300"
-                >
-                  |
-                </span>
-              </template>
-
-              <span
-                class="ml-1 text-sm text-stone-500"
-              >
-                WIB
-              </span>
-            </div>
-          </div>
+            Jadwal dapat mengalami perubahan
+            pada hari raya atau perayaan liturgi khusus.
+          </p>
         </div>
 
-        <!-- Location -->
+        <!-- Weekday -->
         <div
-          class="mt-8 rounded-3xl bg-church-50 p-6 sm:p-8"
+          v-if="weekdaySchedule"
+          class="mb-5"
         >
-          <p
-            class="text-xs font-bold uppercase tracking-[0.18em] text-gold-500"
-          >
-            Lokasi Perayaan
-          </p>
+          <MassScheduleCard
+            :schedule="weekdaySchedule"
+          />
+        </div>
 
-          <h2
-            class="mt-3 font-display text-xl font-bold text-church-900"
-          >
-            {{ parishConfig.churchName }}
-          </h2>
+        <!-- Saturday -->
+        <div
+          class="grid gap-5 md:grid-cols-2"
+        >
+          <MassScheduleCard
+            v-for="schedule in saturdaySchedules"
+            :key="schedule.id"
+            :schedule="schedule"
+          />
+        </div>
 
-          <p
-            class="mt-2 max-w-2xl text-sm leading-6 text-stone-600"
+        <!-- Sunday Featured -->
+        <div
+          v-if="sundaySchedule"
+          class="mt-5"
+        >
+          <article
+            class="relative overflow-hidden rounded-[2rem] bg-church-900 p-7 text-white sm:p-9 lg:p-10"
           >
-            {{ parishConfig.address }}
-          </p>
+            <div
+              class="absolute -right-24 -top-24 size-64 rounded-full border border-white/10"
+            />
+
+            <div
+              class="absolute right-16 top-10 size-40 rounded-full border border-white/10"
+            />
+
+            <div
+              class="relative grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end"
+            >
+              <div>
+                <div
+                  class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5"
+                >
+                  <span
+                    class="size-1.5 rounded-full bg-gold-500"
+                  />
+
+                  <p
+                    class="text-[11px] font-bold uppercase tracking-[0.18em] text-gold-500"
+                  >
+                    {{ sundaySchedule.dayLabel }}
+                  </p>
+                </div>
+
+                <h3
+                  class="mt-5 font-display text-3xl font-bold sm:text-4xl"
+                >
+                  {{ sundaySchedule.label }}
+                </h3>
+
+                <p
+                  class="mt-3 text-sm text-white/50"
+                >
+                  {{ sundaySchedule.location }}
+                </p>
+              </div>
+
+              <div
+                class="flex flex-wrap gap-3"
+              >
+                <div
+                  v-for="time in sundaySchedule.times"
+                  :key="time"
+                  class="min-w-[135px] rounded-2xl border border-white/10 bg-white/10 px-6 py-5 backdrop-blur"
+                >
+                  <p
+                    class="font-display text-4xl font-bold"
+                  >
+                    {{ time }}
+                  </p>
+
+                  <p
+                    class="mt-1 text-xs font-bold tracking-[0.15em] text-gold-500"
+                  >
+                    WIB
+                  </p>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- Address -->
+        <div
+          class="mt-10 flex flex-col gap-5 rounded-[2rem] border border-stone-200 bg-white p-7 sm:flex-row sm:items-center sm:justify-between sm:p-8"
+        >
+          <div>
+            <p
+              class="text-xs font-bold uppercase tracking-[0.18em] text-gold-500"
+            >
+              Lokasi
+            </p>
+
+            <h3
+              class="mt-2 font-display text-xl font-bold text-church-900"
+            >
+              {{ parishConfig.churchName }}
+            </h3>
+
+            <p
+              class="mt-2 max-w-2xl text-sm leading-6 text-stone-500"
+            >
+              {{ parishConfig.address }}
+            </p>
+          </div>
+
+          <NuxtLink
+            to="/kontak"
+            class="inline-flex shrink-0 items-center justify-center rounded-full bg-church-900 px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+          >
+            Lihat Lokasi
+          </NuxtLink>
         </div>
       </template>
     </section>
