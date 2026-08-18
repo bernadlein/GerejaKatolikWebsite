@@ -153,6 +153,7 @@ const {
           </h3>
 
           <div
+            v-if="bulletins.length"
             class="mt-7 space-y-3"
           >
             <article
@@ -161,24 +162,24 @@ const {
               class="rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:bg-white/10"
             >
               <p
+                v-if="bulletin.liturgicalLabel"
                 class="text-xs font-medium text-gold-500"
               >
                 {{ bulletin.liturgicalLabel }}
               </p>
-
+          
               <h4
                 class="mt-2 font-display text-lg font-bold"
               >
                 {{ bulletin.title }}
               </h4>
-
+          
               <p
-                v-if="bulletin.description"
-                class="mt-2 text-sm leading-6 text-white/50"
+                class="mt-2 text-sm text-white/50"
               >
-                {{ bulletin.description }}
+                {{ bulletin.dateLabel }}
               </p>
-
+          
               <a
                 v-if="bulletin.pdfUrl"
                 :href="bulletin.pdfUrl"
@@ -187,9 +188,28 @@ const {
                 class="mt-4 inline-flex text-sm font-semibold text-white"
               >
                 Baca Warta →
-
+          
               </a>
             </article>
+          </div>
+          
+          <div
+            v-else
+            class="mt-7 rounded-2xl border border-white/10 bg-white/5 p-6"
+          >
+            <p
+              class="font-display text-lg font-bold"
+            >
+              Warta akan segera tersedia
+            </p>
+          
+            <p
+              class="mt-2 text-sm leading-6 text-white/50"
+            >
+              Warta mingguan resmi Paroki
+              akan ditampilkan di sini
+              setelah dokumen tersedia.
+            </p>
           </div>
 
           <NuxtLink
