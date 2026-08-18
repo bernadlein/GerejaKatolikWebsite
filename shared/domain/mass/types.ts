@@ -9,12 +9,17 @@ export type MassDay =
 
 export interface WeeklyMassSchedule {
   id: string
-  day: MassDay
+  days: MassDay[]
   time: string
   label: string
   location: string
 }
 
-export interface UpcomingMass extends WeeklyMassSchedule {
+export interface UpcomingMass {
+  id: string
+  day: MassDay
+  time: string
+  label: string
+  location: string
   startsAt: Date
 }
