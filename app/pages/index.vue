@@ -1,14 +1,20 @@
 <script setup lang="ts">
+import { parishConfig } from '~/config/parish'
+
 useSeoMeta({
-  title: 'Beranda',
-  description: 'Informasi jadwal misa, warta, sakramen, kegiatan, dan pelayanan umat.',
+  title: parishConfig.name,
+
+  description:
+    'Website resmi Paroki St. Yosafat Surabaya. Informasi jadwal misa, pelayanan sakramen, warta paroki, kegiatan, dan kehidupan umat.',
 })
 </script>
 
 <template>
   <div>
     <HeroSection />
+
     <QuickLinksSection />
+
     <UpcomingMassesSection />
   </div>
 </template>
