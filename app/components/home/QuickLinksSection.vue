@@ -1,81 +1,96 @@
 <script setup lang="ts">
-import type { QuickLinkIcon } from '~/config/home'
+import { homePageConfig } from '~/config/home'
 
-defineProps<{
-  name: QuickLinkIcon
-}>()
+const quickLinks = homePageConfig.quickLinks
 </script>
 
 <template>
-  <svg
-    v-if="name === 'mass'"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="1.7"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    aria-hidden="true"
-  >
-    <path d="M12 3v18" />
-    <path d="M8 7h8" />
-    <path d="M6 21h12" />
-  </svg>
+  <section class="bg-white">
+    <div
+      class="mx-auto max-w-7xl px-5 py-16 sm:py-20 lg:px-8 lg:py-24"
+    >
+      <!-- Section heading -->
+      <div class="max-w-2xl">
+        <div class="flex items-center gap-3">
+          <span class="h-px w-8 bg-gold-500" />
 
-  <svg
-    v-else-if="name === 'bulletin'"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="1.7"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    aria-hidden="true"
-  >
-    <path d="M6 3h12a2 2 0 0 1 2 2v16l-4-3-4 3-4-3-4 3V5a2 2 0 0 1 2-2Z" />
-    <path d="M8 8h8" />
-    <path d="M8 12h6" />
-  </svg>
+          <p
+            class="text-xs font-bold uppercase tracking-[0.22em] text-gold-500"
+          >
+            {{ quickLinks.eyebrow }}
+          </p>
+        </div>
 
-  <svg
-    v-else-if="name === 'sacrament'"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="1.7"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    aria-hidden="true"
-  >
-    <path d="M12 2v7" />
-    <path d="M9 5h6" />
-    <path d="M7 13a5 5 0 0 1 10 0c0 4-5 9-5 9s-5-5-5-9Z" />
-  </svg>
+        <h2
+          class="mt-4 font-display text-3xl font-bold tracking-tight text-church-900 sm:text-4xl"
+        >
+          {{ quickLinks.title }}
+        </h2>
 
-  <svg
-    v-else
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="1.7"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    aria-hidden="true"
-  >
-    <path
-      d="M22 16.92v3a2 2 0 0 1-2.18 2
-      19.79 19.79 0 0 1-8.63-3.07
-      19.5 19.5 0 0 1-6-6
-      19.79 19.79 0 0 1-3.07-8.67
-      A2 2 0 0 1 4.11 2h3
-      a2 2 0 0 1 2 1.72
-      c.13.96.36 1.9.68 2.8
-      a2 2 0 0 1-.45 2.11L8.07 9.9
-      a16 16 0 0 0 6 6
-      l1.27-1.27
-      a2 2 0 0 1 2.11-.45
-      c.9.32 1.84.55 2.8.68
-      A2 2 0 0 1 22 16.92Z"
-    />
-  </svg>
+        <p
+          class="mt-4 max-w-xl text-base leading-7 text-stone-600"
+        >
+          {{ quickLinks.description }}
+        </p>
+      </div>
+
+      <!-- Quick access cards -->
+      <div
+        class="mt-10 grid gap-4 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4"
+      >
+        <NuxtLink
+          v-for="item in quickLinks.items"
+          :key="item.id"
+          :to="item.to"
+          class="group relative overflow-hidden rounded-3xl border border-stone-200 bg-white p-6 transition duration-300 hover:-translate-y-1 hover:border-gold-500/40 hover:shadow-xl hover:shadow-stone-900/5 sm:p-7"
+        >
+          <!-- subtle background decoration -->
+          <div
+            class="absolute -right-10 -top-10 size-28 rounded-full bg-church-50 transition duration-300 group-hover:scale-125 group-hover:bg-gold-500/10"
+          />
+
+          <div class="relative">
+            <!-- Icon -->
+            <div
+              class="flex size-12 items-center justify-center rounded-2xl bg-church-50 text-church-800 transition duration-300 group-hover:bg-church-900 group-hover:text-white"
+            >
+              <QuickLinkIcon
+                :name="item.icon"
+                class="size-6"
+              />
+            </div>
+
+            <!-- Content -->
+            <h3
+              class="mt-6 font-display text-xl font-bold text-church-900"
+            >
+              {{ item.title }}
+            </h3>
+
+            <p
+              class="mt-3 min-h-[72px] text-sm leading-6 text-stone-600"
+            >
+              {{ item.description }}
+            </p>
+
+            <!-- CTA -->
+            <div
+              class="mt-6 flex items-center text-sm font-semibold text-church-800"
+            >
+              <span>
+                Selengkapnya
+              </span>
+
+              <span
+                aria-hidden="true"
+                class="ml-2 transition-transform duration-300 group-hover:translate-x-1"
+              >
+                →
+              </span>
+            </div>
+          </div>
+        </NuxtLink>
+      </div>
+    </div>
+  </section>
 </template>
