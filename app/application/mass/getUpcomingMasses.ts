@@ -1,10 +1,17 @@
-import type { MassRepository } from '#shared/domain/mass/MassRepository'
-
 import type {
   MassDay,
   UpcomingMass,
   WeeklyMassSchedule,
 } from '#shared/domain/mass/types'
+
+import type {
+  MassRepository,
+} from '#shared/domain/mass/MassRepository'
+
+import {
+  getZonedDateParts,
+  zonedDateTimeToDate,
+} from '#shared/utils/dateTime'
 
 const dayIndex: Record<MassDay, number> = {
   sunday: 0,
@@ -16,39 +23,115 @@ const dayIndex: Record<MassDay, number> = {
   saturday: 6,
 }
 
-function getNextOccurrence(
+function addDays(
+  year: number,
+  month: number,
+  day: number,
+  amount: number,
+) {
+  const date = new Date(
+    Date.UTC(
+      year,
+      month - 1,
+      day + amount,
+    ),
+  )
+
+  return {
+    year: date.getUTCFullYear(),
+    month: date.getUTCMonth() + 1,
+    day: date.getUTCDate(),
+  }
+}
+
+function getLocalDayIndex(
+  now: Date,
+  timeZone: string,
+): number {
+  const parts = getZonedDateParts(
+    now,
+    timeZone,
+  )
+
+  const localCalendarDate = new Date(
+    Date.UTC(
+      parts.year,
+      parts.month - 1,
+      parts.day,
+    ),
+  )
+
+  return localCalendarDate.getUTCDay()
+}
+
+function createOccurrence(
   schedule: WeeklyMassSchedule,
   day: MassDay,
   now: Date,
+  timeZone: string,
 ): UpcomingMass {
-  const [hours, minutes] = schedule.time
-    .split(':')
-    .map(Number)
-
-  const startsAt = new Date(now)
-
-  startsAt.setHours(
-    hours,
-    minutes,
-    0,
-    0,
+  const nowParts = getZonedDateParts(
+    now,
+    timeZone,
   )
 
-  const targetDay = dayIndex[day]
+  const currentDay =
+    getLocalDayIndex(
+      now,
+      timeZone,
+    )
+
+  const targetDay =
+    dayIndex[day]
 
   let daysAhead =
-    (targetDay - now.getDay() + 7) % 7
+    (targetDay - currentDay + 7) % 7
 
+  const [hour, minute] =
+    schedule.time
+      .split(':')
+      .map(Number)
+
+  let localDate = addDays(
+    nowParts.year,
+    nowParts.month,
+    nowParts.day,
+    daysAhead,
+  )
+
+  let startsAt = zonedDateTimeToDate(
+    {
+      ...localDate,
+      hour,
+      minute,
+    },
+    timeZone,
+  )
+
+  // Jadwal hari ini sudah lewat.
+  // Pindahkan ke minggu berikutnya.
   if (
     daysAhead === 0
     && startsAt <= now
   ) {
     daysAhead = 7
-  }
 
-  startsAt.setDate(
-    now.getDate() + daysAhead,
-  )
+    localDate = addDays(
+      nowParts.year,
+      nowParts.month,
+      nowParts.day,
+      daysAhead,
+    )
+
+    startsAt = zonedDateTimeToDate(
+      {
+        ...localDate,
+        hour,
+        minute,
+      },
+      timeZone,
+    )
+  }
 
   return {
     id: `${schedule.id}-${day}`,
@@ -63,20 +146,24 @@ function getNextOccurrence(
 export async function getUpcomingMasses(
   repository: MassRepository,
   now: Date,
-  limit = 3,
+  timeZone: string,
+  limit = 4,
 ): Promise<UpcomingMass[]> {
   const schedules =
     await repository.getWeeklySchedule()
 
   const occurrences =
-    schedules.flatMap((schedule) =>
-      schedule.days.map((day) =>
-        getNextOccurrence(
-          schedule,
-          day,
-          now,
+    schedules.flatMap(
+      schedule =>
+        schedule.days.map(
+          day =>
+            createOccurrence(
+              schedule,
+              day,
+              now,
+              timeZone,
+            ),
         ),
-      ),
     )
 
   return occurrences
