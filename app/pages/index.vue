@@ -16,5 +16,7 @@ useSeoMeta({
     <QuickLinksSection />
 
     <UpcomingMassesSection />
+
+    <ParishUpdatesSection />
   </div>
 </template>
