@@ -2,6 +2,7 @@ export interface ParishConfig {
   name: string
   churchName: string
   city: string
+  timezone: string
   tagline: string
   address: string
 
@@ -38,6 +39,8 @@ export const parishConfig: ParishConfig = {
   churchName: 'Gereja Santo Yosafat Surabaya',
 
   city: 'Surabaya',
+  
+  timezone: 'Asia/Jakarta',
 
   tagline: 'Bertumbuh bersama dalam iman, persaudaraan, dan pelayanan.',
 
