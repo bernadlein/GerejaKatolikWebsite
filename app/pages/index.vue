@@ -20,5 +20,7 @@ useSeoMeta({
     <ParishUpdatesSection />
 
     <UpcomingEventsSection />
+
+     <FeaturedCommunitiesSection />
   </div>
 </template>
